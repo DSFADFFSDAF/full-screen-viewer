@@ -1,17 +1,46 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Blank</title>
-  <style>
-    /* 最低限のリセットだけ（超軽量） */
-    html,body{height:100%;margin:0;padding:0;}
-    /* 完全な白背景 */
-    body{background:#ffffff; -webkit-text-size-adjust:100%;}
-  </style>
+<meta charset="UTF-8">
+<title>フルスクリーン画像ビューア</title>
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: black;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #preview {
+    max-width: 100vw;   /* 横幅に収める */
+    max-height: 100vh;  /* 高さに収める */
+    object-fit: contain; /* 縦横比はそのまま、切れない */
+    display: none;
+  }
+  #uploader {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 10;
+  }
+</style>
 </head>
 <body>
-  <!-- 真っ白ページ -->
+  <input type="file" id="uploader" accept="image/*">
+  <img id="preview" alt="uploaded image">
+  <script>
+    const input = document.getElementById('uploader');
+    const img = document.getElementById('preview');
+
+    input.onchange = e => {
+      const file = e.target.files[0];
+      if (file) {
+        img.src = URL.createObjectURL(file);
+        img.style.display = "block";
+      }
+    };
+  </script>
 </body>
 </html>
