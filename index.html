@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>フルスクリーン画像ビューア</title>
+<title>ドラッグ&ドロップ画像ビューア</title>
 <style>
   html, body {
     margin: 0;
@@ -14,33 +14,55 @@
     align-items: center;
   }
   #preview {
-    max-width: 100vw;   /* 横幅に収める */
-    max-height: 100vh;  /* 高さに収める */
-    object-fit: contain; /* 縦横比はそのまま、切れない */
+    max-width: 100vw;
+    max-height: 100vh;
+    object-fit: contain;
     display: none;
   }
-  #uploader {
+  #dropzone {
     position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 10;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: gray;
+    font-size: 24px;
+    border: 2px dashed gray;
   }
 </style>
 </head>
 <body>
-  <input type="file" id="uploader" accept="image/*">
+  <div id="dropzone">ここに画像をドラッグ＆ドロップ</div>
   <img id="preview" alt="uploaded image">
+
   <script>
-    const input = document.getElementById('uploader');
+    const dropzone = document.getElementById('dropzone');
     const img = document.getElementById('preview');
 
-    input.onchange = e => {
-      const file = e.target.files[0];
-      if (file) {
+    // ドラッグオーバーした時の見た目
+    dropzone.addEventListener('dragover', e => {
+      e.preventDefault();
+      dropzone.style.borderColor = "white";
+      dropzone.style.color = "white";
+    });
+
+    dropzone.addEventListener('dragleave', () => {
+      dropzone.style.borderColor = "gray";
+      dropzone.style.color = "gray";
+    });
+
+    // ドロップされた時
+    dropzone.addEventListener('drop', e => {
+      e.preventDefault();
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith("image/")) {
         img.src = URL.createObjectURL(file);
         img.style.display = "block";
+        dropzone.style.display = "none"; // ガイドを非表示
       }
-    };
+    });
   </script>
 </body>
 </html>
